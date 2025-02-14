@@ -7,10 +7,10 @@ import { sendVerificationEmail } from "../../mailtrap/emails.js";
 dotenv.config();
 
 const handleUserSignup = async (req, res) => {
-  const { email, username, password } = req.body;
-  if (!email || !username || !password) {
+  const { email, username, role, password } = req.body;
+  if (!email || !username || !password || !role) {
     return res.json({
-      message: "Username, Password and Email are all needed to signup",
+      message: "All fields are needed to signup",
     });
   }
 
@@ -35,6 +35,7 @@ const handleUserSignup = async (req, res) => {
       password: hashedPassword,
       lastLogin: Date.now(),
       verificationToken,
+      roles: [role],
       verificationTokenExpiresAt: Date.now() + 1 * 24 * 60 * 60 * 1000,
     });
     await sendVerificationEmail(email, username, verificationToken);
